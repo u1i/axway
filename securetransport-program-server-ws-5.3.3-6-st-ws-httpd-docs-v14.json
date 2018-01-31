@@ -1,0 +1,4455 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.4.0",
+    "title" : "SecureTransport End-User API v1.4",
+    "contact" : {
+      "email" : "support@axway.com"
+    },
+    "license" : {
+      "name" : "Copyright Axway 2016. All rights reserved."
+    }
+  },
+  "basePath" : "/api/v1.4",
+  "tags" : [ {
+    "name" : "anonymousMessages"
+  }, {
+    "name" : "mailbox"
+  }, {
+    "name" : "myself"
+  }, {
+    "name" : "fileOperations"
+  }, {
+    "name" : "files"
+  }, {
+    "name" : "shares"
+  }, {
+    "name" : "transfers"
+  } ],
+  "schemes" : [ "https", "http" ],
+  "consumes" : [ "application/json", "application/xml" ],
+  "produces" : [ "application/json", "application/xml" ],
+  "paths" : {
+    "/fileops" : {
+      "post" : {
+        "tags" : [ "fileOperations" ],
+        "summary" : "Submit file operation.",
+        "description" : "Submit file operation.\nNOTE: TransferMode (BINARY or ASCII) should be specified in the customAttributes of the model.\n",
+        "operationId" : "submitFileOperation",
+        "consumes" : [ "application/json", "application/xml" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "The file.",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/AsyncOperation"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/fileops/{id}" : {
+      "get" : {
+        "tags" : [ "fileOperations" ],
+        "summary" : "Get file operation.",
+        "description" : "Get a file operation status by its id.",
+        "operationId" : "getFileOperation",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The file operation id.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "fileOperations" ],
+        "summary" : "Upload file content.",
+        "description" : "Perform multipart form data upload by already submitted file operation id.",
+        "operationId" : "postFileContent",
+        "consumes" : [ "multipart/form-data" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The file operation id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "file",
+          "in" : "formData",
+          "description" : "The file to be uploaded.",
+          "required" : true,
+          "type" : "file"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "fileOperations" ],
+        "summary" : "Update file content.",
+        "description" : "Perform chunked upload by already submitted file operation id.",
+        "operationId" : "updateFileContent",
+        "consumes" : [ "application/octet-stream", "text/plain" ],
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The operation id.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "fileOperations" ],
+        "summary" : "Cancel file operation.",
+        "description" : "Cancel file operation by its id.",
+        "operationId" : "deleteFileOperation",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The file operation id.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/files" : {
+      "get" : {
+        "tags" : [ "files" ],
+        "summary" : "Get collection of files and folders in the user home directory.",
+        "description" : "Get collection of files and folders in the user home directory.\n\n**Known issue:** The property `isShared` is not being returned in the files collection.\n",
+        "operationId" : "getFilesInHomeFolder",
+        "parameters" : [ {
+          "name" : "sortBy",
+          "in" : "query",
+          "description" : "Specifies the sort by attribute. Possible values: 'fileName', 'lastModifiedTime', 'size'.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "order",
+          "in" : "query",
+          "description" : "Specifies the sort direction. Possible values: 'ASC' or 'DESC'.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "transferMode",
+          "in" : "query",
+          "description" : "Specifies the file transfer mode: 'ASCII' or 'BINARY'.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "description" : "If present in the query string will return all metadata for the user home directory.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "The start row to list; if this parameter is not set, then it is considered 0.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "The limit of the listed rows. If this parameter is not set, then it is considered to list all rows.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "showdots",
+          "in" : "query",
+          "description" : "Specifies whether to display or hide hidden files and folders (starting with a dot).",
+          "required" : false,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/Files"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "files" ],
+        "summary" : "Uploads file to the user home folder.",
+        "description" : "Uploads file to the user home folder.\n\n**Note:** This method can also update the user home folder metadata if body parameter is specified and the content-type is 'application/json' or 'application/xml'.\n",
+        "operationId" : "uploadFile",
+        "consumes" : [ "multipart/form-data", "application/octet-stream", "text/plain" ],
+        "parameters" : [ {
+          "name" : "transferMode",
+          "in" : "query",
+          "description" : "Specifies the file transfer mode: 'ASCII' or 'BINARY'.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "file",
+          "in" : "formData",
+          "description" : "The file to be uploaded.",
+          "required" : true,
+          "type" : "file"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/files/{filePath}" : {
+      "get" : {
+        "tags" : [ "files" ],
+        "summary" : "Get list of files.",
+        "description" : "Get list of files, if the specified file is directory. Otherwise get the file content. If the file path contains GLOB characters a listing will be performed. If status parameter is present will return the file metadata.",
+        "operationId" : "getFilesInHomeSubFolder",
+        "parameters" : [ {
+          "name" : "filePath",
+          "in" : "path",
+          "description" : "Specifies the target file path.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "sortBy",
+          "in" : "query",
+          "description" : "Specifies the sort by attribute. Possible values: 'fileName', 'lastModifiedTime', 'size'.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "order",
+          "in" : "query",
+          "description" : "Specifies the sort direction. Possible values: 'ASC' or 'DESC'.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "transferMode",
+          "in" : "query",
+          "description" : "Specifies the file transfer mode: 'ASCII' or 'BINARY'.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "description" : "If present in the query string will return all metadata for the user home directory.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "The start row to list; if this parameter is not set, then it is considered 0.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "The limit of the listed rows; if this parameter is not set, then it is considered to list all rows.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "showdots",
+          "in" : "query",
+          "description" : "Specifies whether to display or hide hidden files and folders (starting with a dot).",
+          "required" : false,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "files" ],
+        "summary" : "Update file's metadata.",
+        "description" : "Updates metadata of the file, pointed by the filepath. If the file name stored in the File object is different then the one in the filepath will rename the target file/directory.\n\n**Note:** This method can also upload file to the folder, pointed by the filepath, if the query parameter 'transferMode' is specified and the content-type is 'multipart/form-data'.\n",
+        "operationId" : "updateFile",
+        "consumes" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "filePath",
+          "in" : "path",
+          "description" : "Specifies the file path.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "The new file metadata to create.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/FileObject"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "files" ],
+        "summary" : "Create file or folder.",
+        "description" : "Creates a file or directory with specified filepath.\n\n**Note:** This method can also upload any file, if the query parameter 'transferMode' is specified.\n",
+        "operationId" : "createFileOrFolder",
+        "consumes" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "filePath",
+          "in" : "path",
+          "description" : "Specifies the full file path, including file name.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "file",
+          "description" : "The file metadata to create.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/FileObject"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "files" ],
+        "summary" : "Delete file or directory.",
+        "description" : "Deletes the file or directory, specified by the file path argument.",
+        "operationId" : "deleteFileOrDirectory",
+        "parameters" : [ {
+          "name" : "filePath",
+          "in" : "path",
+          "description" : "Specifies the target file path to delete.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/auth/globalSettings" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get mailbox's global settings.",
+        "description" : "Get the global settings of the mailbox. Returns if antiphishing is enabled, if HTML rendering is enabled and if HTML sanitization is enabled.",
+        "operationId" : "getMailboxGlobalSettings",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/auth/language" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get mailbox's language.",
+        "description" : "Get the content of the 'Accept-Language' header sent by the user's agent.",
+        "operationId" : "getMailboxUserLanguage",
+        "parameters" : [ {
+          "name" : "Accept-Language",
+          "in" : "header",
+          "description" : "The accept language.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/auth/registration" : {
+      "post" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Create an account on the ST server.",
+        "description" : "Register user on the ST server.",
+        "operationId" : "registerUser",
+        "parameters" : [ {
+          "name" : "emailAddress",
+          "in" : "formData",
+          "description" : "The email address of the user that should be registered.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "firstName",
+          "in" : "formData",
+          "description" : "The first name of the new user.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "lastName",
+          "in" : "formData",
+          "description" : "The last name of the new user.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "newPassword",
+          "in" : "formData",
+          "description" : "The password of the new user.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "newPasswordHint",
+          "in" : "formData",
+          "description" : "The password hint of the new user.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/auth/registration/{key}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get registration user data.",
+        "description" : "Get the email address of the user for the given self-registration key. \n\n**Known issue:** This operation is not working properly and the email address of the user for the given self-registration key is not being returned.\n",
+        "operationId" : "getMailboxRegisterUserData",
+        "parameters" : [ {
+          "name" : "key",
+          "in" : "path",
+          "description" : "The self-registration key.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/auth/{userEmail}/loginImage" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get login image names collection.",
+        "description" : "Get a collection of available login image names for the purpose of anti-phishing.\n\n**Known issue:** This method sets cach headers and it does not return any login images.\n",
+        "operationId" : "getMailboxUserLoginImage",
+        "parameters" : [ {
+          "name" : "userEmail",
+          "in" : "path",
+          "description" : "The email address of the user.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "LoginImageIds",
+          "in" : "header",
+          "description" : "The ids of the login images.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/auth/{userEmail}/requestPasswordHint" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Send password reset hint.",
+        "description" : "Sends a mail to the user that contains his/her password hint. Due to security concerns the request will succeed regardless of whether a user with the given mail address exists.",
+        "operationId" : "requestPasswordHint",
+        "parameters" : [ {
+          "name" : "userEmail",
+          "in" : "path",
+          "description" : "The email address of the user.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/auth/{userEmail}/requestPasswordReset" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Send password reset link.",
+        "description" : "Sends a mail to the user containing a password reset link. Due to security concerns the request will succeed regardless of whether a user with the given mail address exists.",
+        "operationId" : "requestPasswordReset",
+        "parameters" : [ {
+          "name" : "userEmail",
+          "in" : "path",
+          "description" : "The email address of the user.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/auth/{userEmail}/resetPassword/{key}" : {
+      "put" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Reset the user password.",
+        "description" : "Reset the user password. After a password reset key is sent, this key can be used for setting a new password.",
+        "operationId" : "resetUserPassword",
+        "parameters" : [ {
+          "name" : "userEmail",
+          "in" : "path",
+          "description" : "The email address of the user.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "key",
+          "in" : "path",
+          "description" : "The password reset key.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "newPassword",
+          "in" : "formData",
+          "description" : "The new password.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "newPasswordHint",
+          "in" : "formData",
+          "description" : "The new password hint.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/folders" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get mailbox folders information.",
+        "description" : "Get general information about email folders. System folders can be referenced as _inbox, _sent and _drafts, but the REST API exposes them as _(\"Inbox\"), _(\"Sent\") and _(\"Drafts\") as well, or their translations depending on the value of the \"Accept-Language\" header.\n",
+        "operationId" : "getMailboxFolders",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/Folder"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Create new folder.",
+        "description" : "Create new folder.",
+        "operationId" : "createMailboxNewFolder",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "formData",
+          "description" : "The name for the newly-created folder.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/folders/mailbox" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get mailbox folder name.",
+        "description" : "Get the mailbox folder name.",
+        "operationId" : "getMailboxFolderName",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/folders/{name}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get messages in an email folder.",
+        "description" : "Get paginated view on the messages in an email folder.",
+        "operationId" : "getMailboxFolder",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "description" : "The name of the folder.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "Starting index for pagination.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Number of items to retrieve. The limit parameter can has only non negative integer value. If the value is 0, only the number of items in the folder is retrieved.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error - The limit is not positive number."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Delete email folder.",
+        "description" : "Deletes an empty folder.",
+        "operationId" : "deleteMailboxFolder",
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "description" : "The name of the folder to be deleted.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/folders/{oldName}/name" : {
+      "put" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Rename folder.",
+        "description" : "Rename folder.\n\n**Known issue:** This operation is not working properly and a folder can not be renamed successfully.\n",
+        "operationId" : "renameMailboxFolder",
+        "parameters" : [ {
+          "name" : "oldName",
+          "in" : "path",
+          "description" : "The name of the folder that should be changed.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "formData",
+          "description" : "The new name of the folder.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully renamed folder. The response contains the message for the successful operation and the old and the new name of the folder.",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messageHistory/{messageId}/download" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Retrieve the download history of a given message.",
+        "description" : "Retrieve the download history of a given message.",
+        "operationId" : "getMessageDownloadHistory",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which history to retrieve. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Page size for pagination (the limit of the listed rows). The limit parameter can has only a positive integer value. If limit is not set then the full download history will be retrieved.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "The starting index for pagination (the start row to list). The offset parameter can has only a positive integer value. If this parameter is not set, then it is considered 0.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/RecipientsDownloadHistory"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error - for example if  limit is not a positive number."
+          }
+        }
+      }
+    },
+    "/mailbox/messageHistory/{messageId}/firstAccess" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Retrieve the access history of a given message.",
+        "description" : "Retrieve the access history of a given message.",
+        "operationId" : "getMessageHistoryFirstAccess",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which history to retrieve. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Page size for pagination (the limit of the listed rows). The limit parameter can has only a positive integer value. If limit is not set then the full download history will be retrieved.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "The starting index for pagination (the start row to list). The offset parameter can has only a positive integer value. If this parameter is not set, then it is considered 0.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/RecipientsAccessHistory"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages" : {
+      "post" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Create draft message.",
+        "description" : "Creates a draft. The draft resides in the \"Drafts\" system folder. The response contains the messageId of the newly created draft.",
+        "operationId" : "createDraftMessage",
+        "parameters" : [ {
+          "name" : "to",
+          "in" : "formData",
+          "description" : "Comma separated email addresses of the recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "cc",
+          "in" : "formData",
+          "description" : "Comma separated email addresses of the carbon-copy recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "bcc",
+          "in" : "formData",
+          "description" : "Comma separated email addresses of the blind carbon-copy recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "subject",
+          "in" : "formData",
+          "description" : "The message's subject.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "message",
+          "in" : "formData",
+          "description" : "The message's content.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "security",
+          "in" : "formData",
+          "description" : "The message's security level. The security level might be: \n  - `EXISTING_ACCOUNT` - this package is intended to be delivered only to existing accounts;\n  - `ENROLL_LICENSED` - auto enroll licensed users;\n  - `ENROLL_UNLICENSED` - auto enroll unlicensed users;\n  - `CHALLENGED_LINK` - challenge security level;\n  - `ANONYMOUS_LINK` - anonymous security level.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "question",
+          "in" : "formData",
+          "description" : "The message's secret question (ignored if security is  not 'challenge').",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "answer",
+          "in" : "formData",
+          "description" : "The answer to the message's secret question (ignored if security is not 'challenge').",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "expiration",
+          "in" : "formData",
+          "description" : "The expiration interval in minutes for this message. If null default expiration will be set.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/public" : {
+      "get" : {
+        "tags" : [ "anonymousMessages" ],
+        "summary" : "Get package item via link.",
+        "description" : "Retrieves a package item via link.",
+        "operationId" : "getAnonymousMessageByGet",
+        "produces" : [ "application/json", "application/xml", "application/octet-stream" ],
+        "parameters" : [ {
+          "name" : "token",
+          "in" : "query",
+          "description" : "The encrypted download target.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "question",
+          "in" : "query",
+          "description" : "The package challenge.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "answer",
+          "in" : "query",
+          "description" : "The secret answer to the challenge needed to download the file.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error - Attempted anonymous download using invalid token."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "anonymousMessages" ],
+        "summary" : "Get package item via link.",
+        "description" : "Retrieves a package item via link.",
+        "operationId" : "getAnonymousMessageByPost",
+        "produces" : [ "application/json", "application/xml", "application/octet-stream" ],
+        "parameters" : [ {
+          "name" : "token",
+          "in" : "formData",
+          "description" : "The encrypted download target.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "question",
+          "in" : "formData",
+          "description" : "The package challenge.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "answer",
+          "in" : "formData",
+          "description" : "The secret answer to the challenge needed to download the file.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error - Attempted anonymous download using invalid token."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get information about a particular message.",
+        "description" : "Get information about a particular message.",
+        "operationId" : "getMessageInformation",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which content (body) to retrieve. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/Message"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Update a draft with a given ID.",
+        "description" : "Update a draft with a given ID.\n\n**Known issue:** The update of 'security' property is not being successfully applied.\n",
+        "operationId" : "updateDraft",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the draft to update.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "to",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "cc",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of carbon-copy recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "bcc",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of blind carbon-copy recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "subject",
+          "in" : "formData",
+          "description" : "The message's subject",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "message",
+          "in" : "formData",
+          "description" : "The message's content",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "security",
+          "in" : "formData",
+          "description" : "The message's security level. The security level might be: \n  - `EXISTING_ACCOUNT` - this package is intended to be delivered only to existing accounts;\n  - `ENROLL_LICENSED` - auto enroll licensed users;\n  - `ENROLL_UNLICENSED` - auto enroll unlicensed users;\n  - `CHALLENGED_LINK` - challenge security level;\n  - `ANONYMOUS_LINK` - anonymous security level.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "question",
+          "in" : "formData",
+          "description" : "The message's secret question (ignored if security is not challenge)",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "answer",
+          "in" : "formData",
+          "description" : "the answer to the message's secret question (ignored if security is not challenge)",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "expiration",
+          "in" : "formData",
+          "description" : "The expiration interval in minutes for this message. If null default expiration will be set.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation. Draft was successfully updated.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Delete a message (or a draft) with given ID.",
+        "description" : "Delete a message (or a draft) with given ID.",
+        "operationId" : "deleteMessageOrDraft",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message (or the draft) to delete.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully deleted message (or draft)."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/attachments" : {
+      "post" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Add attachment to draft message.",
+        "description" : "Add an attachment to the draft message with the given messageId.",
+        "operationId" : "addAttachmentToDraftMessage",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The message id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "file",
+          "in" : "formData",
+          "description" : "The file to be uploaded.",
+          "required" : false,
+          "type" : "file"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToString"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/attachments/abortitem/{streamId}/{isDownload}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Abort a specific transfer.",
+        "description" : "Abort an attachment transfer for given message. Returns message with the count of aborted transfers.",
+        "operationId" : "abortItemTransfer",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The message id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "streamId",
+          "in" : "path",
+          "description" : "The attachment stream id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "isDownload",
+          "in" : "path",
+          "description" : "If it is 'd' (true) abort all downloads, otherwise if it is 'u' (false) abort all uploads.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToString"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/attachments/abortpackage/{isDownload}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Abort all transfers.",
+        "description" : "Abort all running transfers for given item and direction. Returns message with the count of aborted transfers.",
+        "operationId" : "abortPackageTransfer",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The message id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "isDownload",
+          "in" : "path",
+          "description" : "If it is 'd' (true) abort all downloads, otherwise if it is 'u' (false) abort all uploads.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToString"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/attachments/zipped/{zipFilename}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Create zip archive.",
+        "description" : "Create zip archive of a message attachments.",
+        "operationId" : "getMessageAttachmentsZipped",
+        "produces" : [ "application/json", "application/xml", "application/octet-stream" ],
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The message id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "files",
+          "in" : "query",
+          "description" : "Comma separated attachments stream ids.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "zipFilename",
+          "in" : "path",
+          "description" : "The zip file name.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/attachments/{streamId}" : {
+      "post" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Add an attachment.",
+        "description" : "Add an attachment from the point where it was stopped.(checkpoint restart of attachments).\n\n**Note:** Resume after abort of the attachment is not supported.\n",
+        "operationId" : "resumeAttachment",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The message id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "streamId",
+          "in" : "path",
+          "description" : "The attachment stream id.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToString"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/attachments/{streamId}/{filename}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get message attachment's content.",
+        "description" : "Get a full content of a message's attachment.",
+        "operationId" : "getMessageAttachment",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The message id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "streamId",
+          "in" : "path",
+          "description" : "The attachment stream id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "filename",
+          "in" : "path",
+          "description" : "The file name.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Delete message's attachment.",
+        "description" : "Delete message's attachment.",
+        "operationId" : "deleteMessageAttachment",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The message id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "streamId",
+          "in" : "path",
+          "description" : "The attachment stream id.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "filename",
+          "in" : "path",
+          "description" : "The file name.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToString"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - the requested package is not found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/content/{streamId}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get message content (body) in text/plain or text/html format.",
+        "description" : "Get message content (body). Message body can be get in two MIME types: text/plain and text/html – these are denoted by Request header Accept. Message body is identified by streamId – that path parameter can be obtained from response when getting /mailbox/messages/{messageId}.\n",
+        "operationId" : "getMessageContent",
+        "produces" : [ "test/plain", "test/html" ],
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which content (body) to retrieve. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "streamId",
+          "in" : "path",
+          "description" : "The stream ID of the message content.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/content/{streamId}/unsanitized" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get message body in text/html format.",
+        "description" : "This resource deals with Message body. Message body is identified by streamId – that path parameter can be obtained from response when getting /mailbox/messages/{messageId}. The path parameter unsanitized is a marker and it denotes to get message body in text/html format but its content will be escaped (any <, >, “ and other HTML specific characters will be escaped).\n",
+        "operationId" : "getMessageTextUnsanitizedHtml",
+        "produces" : [ "text/html" ],
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which content (body) to retrieve. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "streamId",
+          "in" : "path",
+          "description" : "The stream ID of the message content.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/customProperties" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Retrieve custom properties of a given package.",
+        "description" : "Retrieve custom properties of a given package.\n\n**Known Issue:** The PackageCustomProperties collection does not comply with the common json objects representation.\n",
+        "operationId" : "getMessageCustomProperties",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which custom properties to retrieve. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/PackageCustomProperties"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Set package custom properties.",
+        "description" : "Set package custom properties.",
+        "operationId" : "setCustomProperties",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which custom properties to set. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "A packageCustomProperties entity containing the custom properties to set set.",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/PackageCustomProperties"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/folder" : {
+      "put" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Move a message (or a draft) to a folder.",
+        "description" : "Retrieve custom properties of a given package.",
+        "operationId" : "moveMessageToFolder",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which custom properties to retrieve. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "formData",
+          "description" : "The name of the folder where the message should be moved.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successfully moved message (or draft)."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/forward" : {
+      "post" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Create a draft that has the same attachments as a specified message.",
+        "description" : "Create a draft that has the same attachments as the message with the given {messageId}. The draft resides in the \"Drafts\" system folder (only for registered users).\n",
+        "operationId" : "forwardMessage",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message which custom properties to set. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "to",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "cc",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of carbon-copy recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "bcc",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of blind carbon-copy recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "subject",
+          "in" : "formData",
+          "description" : "The message's subject",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "message",
+          "in" : "formData",
+          "description" : "The message's content",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "security",
+          "in" : "formData",
+          "description" : "The message's security level. The security level might be: \n  - `EXISTING_ACCOUNT` - this package is intended to be delivered only to existing accounts;\n  - `ENROLL_LICENSED` - auto enroll licensed users;\n  - `ENROLL_UNLICENSED` - auto enroll unlicensed users;\n  - `CHALLENGED_LINK` - challenge security level;\n  - `ANONYMOUS_LINK` - anonymous security level.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "question",
+          "in" : "formData",
+          "description" : "The message's secret question (ignored if security level is not challenge)",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "answer",
+          "in" : "formData",
+          "description" : "the answer to the message's secret question (ignored if security level is not challenge)",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "expiration",
+          "in" : "formData",
+          "description" : "The expiration interval in minutes for this message. If null default expiration will be set.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation. The response message contain info message \"Draft was successfully created\" and the \"messageId\" property of the newly created draft.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/recall" : {
+      "put" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Recall a message that was sent by the current user (Not Implemented).",
+        "description" : "Recall a message that was sent by the current user. \n\n`Note`: **The recall of a message is not implemented**.\n",
+        "operationId" : "recallMessage",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message to recall.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Not implemented.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/reply" : {
+      "post" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Create a draft as a reply to a given message.",
+        "description" : "Create a draft as a reply to a given message. The draft resides in the \"Drafts\" system folder (only for registered users).\n\n**Known issue:** This request creates new message draft, instead to create draft message reply for a received message.\n",
+        "operationId" : "postReply",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the message to reply.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "to",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "cc",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of carbon-copy recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "bcc",
+          "in" : "formData",
+          "description" : "Comma-separated email addresses of blind carbon-copy recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "subject",
+          "in" : "formData",
+          "description" : "The message's subject",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "message",
+          "in" : "formData",
+          "description" : "The message's content",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "security",
+          "in" : "formData",
+          "description" : "The message's security level. The security level might be: \n  - `EXISTING_ACCOUNT` - this package is intended to be delivered only to existing accounts;\n  - `ENROLL_LICENSED` - auto enroll licensed users;\n  - `ENROLL_UNLICENSED` - auto enroll unlicensed users;\n  - `CHALLENGED_LINK` - challenge security level;\n  - `ANONYMOUS_LINK` - anonymous security level.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "question",
+          "in" : "formData",
+          "description" : "The message's secret question (ignored if security level is not challenge)",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "answer",
+          "in" : "formData",
+          "description" : "the answer to the message's secret question (ignored if security level is not challenge)",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "expiration",
+          "in" : "formData",
+          "description" : "The expiration interval in minutes for this message. If null default expiration will be set.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully created draft. The response contains the messageId of the newly created draft.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/messages/{messageId}/send" : {
+      "put" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Send a draft with a given messageId.",
+        "description" : "Send a draft with a given messageId.\n\n`Note`: At least one of to, cc, and bcc must be non-empty in the draft that is about to be sent.\n\n**Known issue:** If the given messageId is an ID of already submitted message, the result is \"Successfully sent draft and ID of the sent message.\" instead of error message. In the ST log will be saved an error message describing the error.\n",
+        "operationId" : "sendDraftMessage",
+        "parameters" : [ {
+          "name" : "messageId",
+          "in" : "path",
+          "description" : "The ID of the draft to send. The ID is Base64 encoded.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successfully sent draft. The response contains the messageId of the sent message (it is the same as the ID of the draft).",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if requested message is not available."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/myself" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Get information about the currently logged-in user.",
+        "description" : "Get information about the currently logged-in user - the username (an email address) and a list of assigned permissions.\n",
+        "operationId" : "getMailboxMyselfInfo",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation. The response is a map containing username and permissions as keys.",
+            "schema" : {
+              "$ref" : "#/definitions/MyselfObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Force a session invalidation (log an user out).",
+        "description" : "Force a session invalidation (log an user out).",
+        "operationId" : "mailboxLogoutUser",
+        "parameters" : [ ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/preferences" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Retrieve the preferences of the currently logged-in user (Not Implemented).",
+        "description" : "Retrieve the preferences of the currently logged-in user.\n\n`Note`: **This method is not implemented and always returns an empty HashMap.**\n",
+        "operationId" : "getMailboxPreferences",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Update the preferences of the currently logged-in user (Not Implemented).",
+        "description" : "Update the preferences of the currently logged-in user. \n\n`Note`: **This method is not implemented and always returns response code 200 - successful operation.**\n",
+        "operationId" : "updatePreferences",
+        "parameters" : [ {
+          "name" : "language",
+          "in" : "formData",
+          "description" : "Localization of the end-user interface.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "firstName",
+          "in" : "formData",
+          "description" : "The first name of the user.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "lastName",
+          "in" : "formData",
+          "description" : "The last name of the user.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "junkAction",
+          "in" : "formData",
+          "description" : "Define how to handle junk messages.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "bulkAction",
+          "in" : "formData",
+          "description" : "Define how to handle bulk messages.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "emailReportInterval",
+          "in" : "formData",
+          "description" : "The number of minutes between consecutive email reports, 0 is used to indicate that the user has chosen not to receive an email report.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "showSendConfirmation",
+          "in" : "formData",
+          "description" : "Define whether to show a confirmation page before sending a message.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "emailFormat",
+          "in" : "formData",
+          "description" : "Preferred format for viewing messages.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "notifyOnPackageView",
+          "in" : "formData",
+          "description" : "Define whether to notify the user when the recipient of his or her message sees it.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "antiphishingImage",
+          "in" : "formData",
+          "description" : "The name of an antiphishing image to be assigned to this user.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/purls" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Not Implemented.",
+        "description" : "`Note`: **This method is not implemented and always returns an empty HashMap.**\n",
+        "operationId" : "getPurls",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/MapStringToObject"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if an address book contact with the specified ID can not be found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/purls/{messageHexId}" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Not Implemented.",
+        "description" : "`Note`: **This method is not implemented and always returns an empty HashMap.**\n",
+        "operationId" : "getMessagePurls",
+        "parameters" : [ {
+          "name" : "messageHexId",
+          "in" : "path",
+          "description" : "The message hex ID.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if an address book contact with the specified ID can not be found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/mailbox/search" : {
+      "get" : {
+        "tags" : [ "mailbox" ],
+        "summary" : "Search the mailbox for a given message.",
+        "description" : "Search the mailbox for a given message. The search includes all messages - sent, received, and drafts.\n\n**Known issue:** This method does not search successfully all the messages.\n",
+        "operationId" : "searchForMessage",
+        "parameters" : [ {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Number of items to retrieve. The limit parameter can has only positive integer value.",
+          "required" : false,
+          "type" : "integer",
+          "default" : -1,
+          "format" : "int32"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "starting index for pagination",
+          "required" : false,
+          "type" : "integer",
+          "default" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "subject",
+          "in" : "query",
+          "description" : "A substring to search for in the message subject.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "description" : "The status of the message to search for. Valid options for a transfer status are: `In Progress`, `Processed`, `Failed`, `Aborted`, `Pending receipt`, `Failed Subtransmission`, `Paused` and `Failed Transfer Resubmit`.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "folder",
+          "in" : "query",
+          "description" : "The exact name of the folder.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sender",
+          "in" : "query",
+          "description" : "A substring that is contained in the email address of the sender",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "recipient",
+          "in" : "query",
+          "description" : "A substring that is contained in the email address of any of the recipients.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sentDateBefore",
+          "in" : "query",
+          "description" : "The date before which the message was sent (the date is included in the range) in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sentDateAfter",
+          "in" : "query",
+          "description" : "The date after which the message was sent (the date is included in the range) in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "expireDateBefore",
+          "in" : "query",
+          "description" : "The date after which the message will expire (the date is included in the range) in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "expireDateAfter",
+          "in" : "query",
+          "description" : "The date before which the message will expire (the date is included in the range) in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z).",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation but no messages matching the criteria are always found.",
+            "schema" : {
+              "$ref" : "#/definitions/Search"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/myself" : {
+      "get" : {
+        "tags" : [ "myself" ],
+        "summary" : "Get the account of the currently logged user.",
+        "description" : "Get the account of the currently logged user.",
+        "operationId" : "getMyselfInfo",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/Account"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if the user does not have an account."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "myself" ],
+        "summary" : "Login user.",
+        "description" : "Login user. Here a user can receive a cookie to use for successive web service calls.",
+        "operationId" : "loginUser",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful user login operation.",
+            "schema" : {
+              "$ref" : "#/definitions/AuthenticationActionResult"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "myself" ],
+        "summary" : "Log out the currently logged-in user from REST API.",
+        "description" : "Log out the currently logged-in user from REST API.",
+        "operationId" : "logoutUser",
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/AuthenticationActionResult"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/myself/changePassword" : {
+      "post" : {
+        "tags" : [ "myself" ],
+        "summary" : "Change the password of the currently logged user.",
+        "description" : "Change the password of the currently logged user.",
+        "operationId" : "changePassword",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "A changePassword entity containing the old password and the new password to set of the currently logged user.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ChangePassword"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successfully changed password of the currently logged user."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request. Example: if the oldPassword property is not correct.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/myself/passwordExpired" : {
+      "get" : {
+        "tags" : [ "myself" ],
+        "summary" : "Get the password expired message.",
+        "description" : "Get the password expired message.",
+        "operationId" : "getMyselfPasswordExpired",
+        "parameters" : [ ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/PasswordExpired"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request. Example: if the oldPassword property is not correct.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/myself/pollServerTime" : {
+      "get" : {
+        "tags" : [ "myself" ],
+        "summary" : "Get the server UTC time.",
+        "description" : "Get the server UTC time. The date format is `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'` and conforms to ISO-8601 date formatting standard",
+        "operationId" : "getCurrentServerTime",
+        "parameters" : [ ],
+        "responses" : {
+          "204" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/ServerTime"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request. Example: if the oldPassword property is not correct.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/myself/resetPassword" : {
+      "get" : {
+        "tags" : [ "myself" ],
+        "summary" : "Send email with the new password.",
+        "description" : "Send email with the new password.",
+        "operationId" : "sendNewPassword",
+        "produces" : [ "text/plain" ],
+        "parameters" : [ {
+          "name" : "token",
+          "in" : "query",
+          "description" : "The security token to validate that this is a proper reset password request.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "A password reset email is sent the requested email."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request. Example: if the oldPassword property is not correct.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "myself" ],
+        "summary" : "Send password reset email with a security token to the requested email.",
+        "description" : "Send password reset email with a security token to the requested email.",
+        "operationId" : "resetPassword",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "A resetPassword entity containing the wanted email to send password reset email to.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ResetPassword"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Successfully sent password reset email to the requested email."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request. Example: if the oldPassword property is not correct.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/shares" : {
+      "get" : {
+        "tags" : [ "shares" ],
+        "summary" : "Get sharing metadata for the home folder of the current user.",
+        "description" : "Get sharing metadata for the home folder of the current user. If `metadata` parameter is provided, gets the metadata for the home folder.\n",
+        "operationId" : "getHomeSharedFolderMetadata",
+        "parameters" : [ {
+          "name" : "metadata",
+          "in" : "query",
+          "description" : "Defines whether to return current user home folder metadata or current user home folder descendants metadata. Set `false` to get shared folders in the home folder of the current user. Set `true` to get metadata for the current user home folder.\n",
+          "required" : false,
+          "type" : "boolean",
+          "default" : false
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation. When `metadata` query parameter is not set or has value `false` then sharedFolders collection of sharedFolder entities is returned. When `metadata` query parameter has value `true` a sharedFolder entity is returned.\n",
+            "schema" : {
+              "$ref" : "#/definitions/SharedFolders"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/shares/{folderPath}" : {
+      "get" : {
+        "tags" : [ "shares" ],
+        "summary" : "Get sharing metadata for the first level descendants of the folder specified.",
+        "description" : "Get sharing metadata for the first level descendants of the folder specified. If `metadata` parameter is provided, gets the metadata for the requested folder.\n",
+        "operationId" : "getSharedFolderMetadata",
+        "parameters" : [ {
+          "name" : "folderPath",
+          "in" : "path",
+          "description" : "A relative folder path.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "metadata",
+          "in" : "query",
+          "description" : "Defines whether to return current folder metadata or its first level descendants metadata. Set `false` to get sub-level shared folders. Set `true` to get metadata only for the folder specified in path.\n",
+          "required" : false,
+          "type" : "boolean",
+          "default" : false
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation. When `metadata` query parameter is not set or has value `false` then sharedFolders collection of sharedFolder entities is returned. When `metadata` query parameter has value `true` a sharedFolder entity is returned.\n",
+            "schema" : {
+              "$ref" : "#/definitions/SharedFolders"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "shares" ],
+        "summary" : "Share folder with other users.",
+        "description" : "Share folder with other users. \n\nNotes: \n  - There is a global server configuration option **SharedFolders.AllowCollaboration** that defines whether the folder collaboration is enabled or not. \n  - If the global server configuration option **SharedFolders.AllowCollaboration** has value `false` or the owner of the folder do not belong to a business unit then the specified folder can not be shared with other users.\n",
+        "operationId" : "shareOrUpdateFolder",
+        "parameters" : [ {
+          "name" : "folderPath",
+          "in" : "path",
+          "description" : "A relative folder path.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "Folder sharing options metadata.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/FolderSharingOptions"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "shares" ],
+        "summary" : "Unshare folder to all users.",
+        "description" : "Unshare folder to all users.",
+        "operationId" : "unshareFolder",
+        "parameters" : [ {
+          "name" : "folderPath",
+          "in" : "path",
+          "description" : "A relative folder path.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully unshared folder."
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/transfers" : {
+      "get" : {
+        "tags" : [ "transfers" ],
+        "summary" : "Retrieve transfer log entries.",
+        "description" : "Retrieve transfer log entries matching the search criteria.",
+        "operationId" : "getTransfers",
+        "parameters" : [ {
+          "name" : "limit",
+          "in" : "query",
+          "description" : "Number of items to retrieve. The limit parameter can has only positive integer value.",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "offset",
+          "in" : "query",
+          "description" : "The offset from the first returned result. The offset parameter can has only nonnegative integer value. If this parameter is not set, then it is considered 0.",
+          "required" : false,
+          "type" : "integer",
+          "default" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "file",
+          "in" : "query",
+          "description" : "The transfered file.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "site",
+          "in" : "query",
+          "description" : "The transfer site name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "description" : "A list of transfer statuses. Valid options for a transfer status are: `In Progress`, `Processed`, `Failed`, `Aborted`, `Pending receipt`, `Failed Subtransmission`, `Paused` and `Failed Transfer Resubmit`.\n",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "startTimeBefore",
+          "in" : "query",
+          "description" : "The time before which the transfer started in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "endTimeBefore",
+          "in" : "query",
+          "description" : "The time before which the transfer ended in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "startTimeAfter",
+          "in" : "query",
+          "description" : "The time after which the transfer started in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "endTimeAfter",
+          "in" : "query",
+          "description" : "The time after which the transfer ended in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "actionBy",
+          "in" : "query",
+          "description" : "Transfer initiated by Server or Client. Possible values are: `User` or `Server`.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "protocol",
+          "in" : "query",
+          "description" : "A list of transfer protocols. Valid options for a transfer protocol are: `as2`, `ftp`, `http`, `ssh`, `pesit`, `folder` and `adhoc`.\n",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "application",
+          "in" : "query",
+          "description" : "A list of application names. More than one parameter is allowed.",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "direction",
+          "in" : "query",
+          "description" : "The transfer direction. Possible values are: `Incoming` or `Outgoing`.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "secure",
+          "in" : "query",
+          "description" : "Define the transfer type - secure or non-secure transfer. Possible values are: `true` or `false`.\n",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "operationIndex",
+          "in" : "query",
+          "description" : "A list of operation indexes.",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/TransferEntries"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/transfers/folder-monitor" : {
+      "post" : {
+        "tags" : [ "transfers" ],
+        "summary" : "Initiate a folder monitor transfer.",
+        "description" : "Initiate a folder monitor transfer.",
+        "operationId" : "createFolderMonitorTransfer",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "folderMonitorEntity",
+          "description" : "The folder monitor request entity.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/MonitoredFolder"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/TransferResult"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/transfers/pull" : {
+      "post" : {
+        "tags" : [ "transfers" ],
+        "summary" : "Pull files from a given site.",
+        "description" : "Pull files from a given site.",
+        "operationId" : "pullFiles",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "serverPull",
+          "description" : "The server pull entity.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TransferPull"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/TransferResult"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/transfers/push" : {
+      "post" : {
+        "tags" : [ "transfers" ],
+        "summary" : "Push a file to a given site.",
+        "description" : "Push a file to a given site.",
+        "operationId" : "pushFile",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "serverPush",
+          "description" : "The server pull entity.",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/TransferPush"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation (if synchronous).",
+            "schema" : {
+              "$ref" : "#/definitions/TransferResult"
+            }
+          },
+          "204" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/TransferResult"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/transfers/{transferId}" : {
+      "get" : {
+        "tags" : [ "transfers" ],
+        "summary" : "Get a specific transfer log entry.",
+        "description" : "Get a specific transfer log entry.",
+        "operationId" : "getTransfer",
+        "parameters" : [ {
+          "name" : "transferId",
+          "in" : "path",
+          "description" : "The Base64 encoded ID of the transfer entity to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/TransferLogDetails"
+            }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request.\n"
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if a transfer with specified ID can not be found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/transfers/{transferId}/mdn" : {
+      "get" : {
+        "tags" : [ "transfers" ],
+        "summary" : "Get the transfer mdn receipt for a transfer entity",
+        "description" : "Get the transfer mdn receipt for a transfer entity.\n\n**Known issue:** This functionality is not working.\n",
+        "operationId" : "getTrasferMdn",
+        "parameters" : [ {
+          "name" : "transferId",
+          "in" : "path",
+          "description" : "Base64 encoded ID of the transfer.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/TransferData"
+            },
+            "headers" : { }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if a transfer with specified ID can not be found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/transfers/{transferId}/mdn/verify" : {
+      "get" : {
+        "tags" : [ "transfers" ],
+        "summary" : "Verify transfer receipt for a given transfer id.",
+        "description" : "Verify transfer receipt for a given transfer id.\n\n**Known issue:** This functionality is not working.\n",
+        "operationId" : "verifyReceipt",
+        "parameters" : [ {
+          "name" : "transferId",
+          "in" : "path",
+          "description" : "Base64 encoded ID of the transfer.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/ReceiptVerificationResult"
+            },
+            "headers" : { }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - for example if a transfer with specified ID can not be found."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/transfers/{transferId}/transferData" : {
+      "get" : {
+        "tags" : [ "transfers" ],
+        "summary" : "Get all transfer data for a given transfer.",
+        "description" : "Get all transfer data for a given transfer.",
+        "operationId" : "getTransferData",
+        "parameters" : [ {
+          "name" : "transferId",
+          "in" : "path",
+          "description" : "Base64 encoded ID of the transfer.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation.",
+            "schema" : {
+              "$ref" : "#/definitions/TransferDataEntries"
+            },
+            "headers" : { }
+          },
+          "400" : {
+            "description" : "Bad request - the returned error message will tell what was incorrect in the request."
+          },
+          "401" : {
+            "description" : "Unauthorized - incorrect login credentials."
+          },
+          "404" : {
+            "description" : "Not Found - transfer with the specified id can not be found on the ST server."
+          },
+          "500" : {
+            "description" : "Internal Server Error."
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "AsyncOperation" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "description" : "The operation id"
+        },
+        "operation" : {
+          "type" : "string",
+          "description" : "The name of the operation",
+          "enum" : [ "MD5Calc", "Upload" ]
+        },
+        "filePath" : {
+          "type" : "string",
+          "description" : "The file path over which this operation will be executed"
+        },
+        "status" : {
+          "type" : "string",
+          "description" : "The operation status",
+          "enum" : [ "DONE", "IN_PROGRESS", "FAILED" ]
+        },
+        "result" : {
+          "$ref" : "#/definitions/AsyncOperation_result"
+        },
+        "errorMsg" : {
+          "type" : "string",
+          "description" : "Specifies the error message if the operation has failed."
+        },
+        "customAttributes" : {
+          "$ref" : "#/definitions/AsyncOperation_customAttributes"
+        }
+      },
+      "xml" : {
+        "name" : "asyncOperation"
+      }
+    },
+    "Files" : {
+      "type" : "object",
+      "properties" : {
+        "files" : {
+          "type" : "array",
+          "description" : "Collection of the files.",
+          "items" : {
+            "$ref" : "#/definitions/FileObject"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "files"
+      }
+    },
+    "FileObject" : {
+      "type" : "object",
+      "properties" : {
+        "fileName" : {
+          "type" : "string",
+          "description" : "The file name"
+        },
+        "newFilePath" : {
+          "type" : "string",
+          "description" : "The new file path"
+        },
+        "lastModifiedTime" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The file last modified time"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The file size."
+        },
+        "isDirectory" : {
+          "type" : "boolean",
+          "description" : "Specifies whether the file is directory or not"
+        },
+        "isRegularFile" : {
+          "type" : "boolean",
+          "description" : "Specifies whether the file is regular file or not"
+        },
+        "isSymbolicLink" : {
+          "type" : "boolean",
+          "description" : "Specifies whether the file is symbolic link or not"
+        },
+        "isOther" : {
+          "type" : "boolean",
+          "description" : "Specifies whether the file type is other or not"
+        },
+        "group" : {
+          "type" : "string",
+          "description" : "Specifies the group id"
+        },
+        "owner" : {
+          "type" : "string",
+          "description" : "Specifies the owner id"
+        },
+        "permissions" : {
+          "type" : "string",
+          "description" : "Specifies the file permissions"
+        },
+        "isShared" : {
+          "type" : "boolean",
+          "description" : "Specifies whether the folder is shared or not (only present for folders)."
+        }
+      },
+      "additionalProperties" : {
+        "type" : "string"
+      },
+      "xml" : {
+        "name" : "file"
+      }
+    },
+    "Folder" : {
+      "type" : "object",
+      "properties" : {
+        "item" : {
+          "$ref" : "#/definitions/FolderItem"
+        }
+      },
+      "xml" : {
+        "name" : "object"
+      }
+    },
+    "FolderItem" : {
+      "type" : "object",
+      "properties" : {
+        "key" : {
+          "type" : "string",
+          "xml" : {
+            "attribute" : true
+          },
+          "description" : "The folder property.",
+          "enum" : [ "name", "nMessages", "nUnreadMessages", "isInbox" ]
+        }
+      },
+      "xml" : {
+        "name" : "item"
+      }
+    },
+    "Message" : {
+      "type" : "object",
+      "properties" : {
+        "item" : {
+          "$ref" : "#/definitions/MessageItem"
+        }
+      },
+      "xml" : {
+        "name" : "object"
+      }
+    },
+    "MessageItem" : {
+      "type" : "object",
+      "properties" : {
+        "key" : {
+          "type" : "string",
+          "xml" : {
+            "attribute" : true
+          },
+          "description" : "The message property.",
+          "enum" : [ "id", "sender", "recipients", "subject", "tracking", "deliveryStatus", "expirationPeriod", "sendTime", "size", "unread", "folder", "isMaxReplyCountReached", "isRecipientRead", "isReadInDraft", "attachments", "content", "brand", "brandingType", "isRejected", "isDraft" ]
+        }
+      },
+      "xml" : {
+        "name" : "item"
+      }
+    },
+    "RecipientsDownloadHistory" : {
+      "type" : "object",
+      "properties" : {
+        "recipientsDownloadHistory" : {
+          "type" : "array",
+          "description" : "Collection of accessHistory entities.",
+          "items" : {
+            "$ref" : "#/definitions/DownloadHistory"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "recipientsDownloadHistory"
+      }
+    },
+    "DownloadHistory" : {
+      "type" : "object",
+      "properties" : {
+        "accountId" : {
+          "type" : "string",
+          "description" : "The id of the account"
+        },
+        "userName" : {
+          "type" : "string",
+          "description" : "The user name"
+        },
+        "email" : {
+          "type" : "string",
+          "description" : "The email address"
+        },
+        "address" : {
+          "type" : "string",
+          "description" : "The recipient IP address. This property is set when the delivery method is `Anonymous`"
+        },
+        "anonymous" : {
+          "type" : "boolean",
+          "description" : "Define whether this recipient is anonymous (true if account is anonymous, false otherwise)",
+          "default" : false
+        },
+        "protocol" : {
+          "type" : "string",
+          "description" : "The protocol. Value of \"http\" is  hard coded."
+        },
+        "downloadTimestamp" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The download time stamp"
+        },
+        "fileName" : {
+          "type" : "string",
+          "description" : "The download file name"
+        },
+        "fileSize" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The file size"
+        },
+        "fileContentType" : {
+          "type" : "string",
+          "description" : "The file content-type."
+        }
+      },
+      "xml" : {
+        "name" : "downloadHistory"
+      }
+    },
+    "RecipientsAccessHistory" : {
+      "type" : "object",
+      "properties" : {
+        "recipientsAccessHistory" : {
+          "type" : "array",
+          "description" : "Collection of accessHistory entities.",
+          "items" : {
+            "$ref" : "#/definitions/AccessHistory"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "recipientsAccessHistory"
+      }
+    },
+    "AccessHistory" : {
+      "type" : "object",
+      "properties" : {
+        "accountId" : {
+          "type" : "string",
+          "description" : "The id of the account"
+        },
+        "userName" : {
+          "type" : "string",
+          "description" : "The user name"
+        },
+        "email" : {
+          "type" : "string",
+          "description" : "The email address"
+        },
+        "address" : {
+          "type" : "string",
+          "description" : "The recipient address (the internet address user is connecting from). This property is set when the delivery method is `Anonymous`"
+        },
+        "anonymous" : {
+          "type" : "boolean",
+          "description" : "Define whether this recipient is anonymous (true if account is anonymous, false otherwise)",
+          "default" : false
+        },
+        "protocol" : {
+          "type" : "string",
+          "description" : "The protocol. Value of \"http\" is  hard coded."
+        },
+        "firstAccessTimestamp" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The time stamp when package was access for first time by this recipient."
+        }
+      },
+      "xml" : {
+        "name" : "accessHistory"
+      }
+    },
+    "PackageCustomProperties" : {
+      "type" : "object",
+      "properties" : {
+        "packageCustomProperties" : {
+          "type" : "array",
+          "description" : "Collection of customProperty entities.",
+          "items" : {
+            "$ref" : "#/definitions/CustomProperty"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "packageCustomProperties"
+      }
+    },
+    "CustomProperty" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "The name of the custom property"
+        },
+        "value" : {
+          "type" : "string",
+          "description" : "The value of the custom property."
+        }
+      },
+      "xml" : {
+        "name" : "customProperty"
+      }
+    },
+    "MyselfObject" : {
+      "type" : "object",
+      "properties" : {
+        "item" : {
+          "$ref" : "#/definitions/MyselfItem"
+        }
+      },
+      "xml" : {
+        "name" : "object"
+      }
+    },
+    "MyselfItem" : {
+      "type" : "object",
+      "properties" : {
+        "key" : {
+          "type" : "string",
+          "xml" : {
+            "attribute" : true
+          },
+          "description" : "The message property.",
+          "enum" : [ "username", "email", "displayName", "unlicensed", "isUnlicensedAllowedToReply", "permissions", "isLdapUserNotBoundToAccount", "idleSessionTimeout", "implicit", "defaultExpiration", "expirationIntervalOptions", "packageManagerFolder", "resolvedHomeDirectory" ]
+        }
+      },
+      "xml" : {
+        "name" : "item"
+      }
+    },
+    "Account" : {
+      "type" : "object",
+      "required" : [ "gid", "name", "type", "uid" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "The account name",
+          "minLength" : 0,
+          "maxLength" : 80,
+          "pattern" : "^(([^\\\\/\\\\;\\\\']*))$"
+        },
+        "homeFolder" : {
+          "type" : "string",
+          "description" : "The home folder on the local system used for this account. The folder path name must be a valid absolute directory name\n",
+          "minLength" : 0,
+          "maxLength" : 255
+        },
+        "homeFolderAccessLevel" : {
+          "type" : "string",
+          "description" : "The home folder access level",
+          "enum" : [ "PRIVATE", "PUBLIC", "BUSINESS_UNIT" ]
+        },
+        "uid" : {
+          "type" : "string",
+          "description" : "The numeric user ID of the account"
+        },
+        "gid" : {
+          "type" : "string",
+          "description" : "The numeric group ID of the account"
+        },
+        "disabled" : {
+          "type" : "boolean",
+          "description" : "This property defines if this account is disabled. If the account is disabled: 1) Subscriptions for the account will not trigger. ; 2) Users associated with the account will not be able to login and perform any transfers\n",
+          "default" : false
+        },
+        "skin" : {
+          "type" : "string",
+          "description" : "The skin templates",
+          "enum" : [ "Default HTML Template", "Axway Jelly Ball 9", "SecureTransport Legacy Client", "Axway Box and Stripe in Blue", "SecureTransport Web Access Plus" ]
+        },
+        "notes" : {
+          "type" : "string",
+          "description" : "An unstructured comments to the account",
+          "minLength" : 0,
+          "maxLength" : 2048
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "The account type. Type 'user' means user account; type 'service' means service account; type 'template' means account template\n",
+          "enum" : [ "user", "service", "template" ]
+        },
+        "unlicensed" : {
+          "type" : "boolean",
+          "description" : "This property defines if the account is an unlicensed account",
+          "default" : false
+        },
+        "authByEmail" : {
+          "type" : "boolean",
+          "description" : "This property defines if authentication by email address is allowed for this account",
+          "default" : false
+        },
+        "businessUnit" : {
+          "type" : "string",
+          "description" : "The business unit that account belongs to"
+        },
+        "contact" : {
+          "description" : "The address book contact which is associated tith an account entity. Reffer to the 'AccountContact' definition\n",
+          "$ref" : "#/definitions/AccountContact"
+        },
+        "deliveryMethod" : {
+          "type" : "string",
+          "description" : "This property defines the delivery method. When deliveryMethod is set to 'Disabled' then Adhoc is disabled and enrollmentType/implicitEnrollmentType can not be set. When deliveryMethod is set to 'Default' then it is only available on BU and Account (setting the BU to use the value and account to use the BU value). When deliveryMethod is set to 'Anonymous' then implicit enrollment types 'Anonymous' and \"\" (empty string for Select by sender) are enabled. When deliveryMethod is set to 'Account Without Enrollment' then implicit enrollment types 'Anonymous', \"\"  (empty string for Select by sender) and 'Existing Account' are enabled. When deliveryMethod is set to 'Account With Enrollment' then implicit enrollment types 'Anonymous', \"\" (empty string for Select by sender), 'Enroll unlicensed', 'Enroll licensed' are enabled          \n",
+          "enum" : [ "Disabled", "Default", "Anonymous", "Account Without Enrollment", "Account With Enrollment", "Custom" ]
+        },
+        "enrollmentTypes" : {
+          "type" : "array",
+          "description" : "This property is used for a custom delivery method and can be set only if deliveryMethod property is set to 'Custom'\n",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "implicitEnrollmentType" : {
+          "type" : "string",
+          "description" : "The Implicit Enrollment Type value controls which option Web Access Plus selects initially in the User Access window and which enrollment type is used by the Axway Email Plug-ins. The choices depend on the enrollment types enabled by the Delivery Methods and Enrollment Types fields\n",
+          "enum" : [ "", "Anonymous", "Existing Account", "Enroll Unlicensed", "Enroll Licensed" ]
+        },
+        "isUnlicensedUserAllowedToReply" : {
+          "type" : "boolean",
+          "description" : "This property defines if the unlicensed user may reply to packages",
+          "default" : false
+        },
+        "wapAppletEnabled" : {
+          "type" : "boolean",
+          "description" : "This property defines if Java WAP applet enabled or not for this account.",
+          "default" : false
+        }
+      },
+      "xml" : {
+        "name" : "account"
+      }
+    },
+    "AccountContact" : {
+      "type" : "object",
+      "properties" : {
+        "email" : {
+          "type" : "string",
+          "description" : "The account email",
+          "maxLength" : 255
+        },
+        "phone" : {
+          "type" : "string",
+          "description" : "The account phone.",
+          "maxLength" : 80
+        }
+      },
+      "xml" : {
+        "name" : "accountContact"
+      }
+    },
+    "AuthenticationActionResult" : {
+      "type" : "object",
+      "properties" : {
+        "message" : {
+          "type" : "string",
+          "description" : "Authentication result message."
+        }
+      },
+      "xml" : {
+        "name" : "authenticationActionResult"
+      }
+    },
+    "ChangePassword" : {
+      "type" : "object",
+      "required" : [ "newPassword", "oldPassword" ],
+      "properties" : {
+        "oldPassword" : {
+          "type" : "string",
+          "description" : "The old password"
+        },
+        "newPassword" : {
+          "type" : "string",
+          "description" : "The new password."
+        }
+      },
+      "xml" : {
+        "name" : "changePassword"
+      }
+    },
+    "PasswordExpired" : {
+      "type" : "object",
+      "properties" : {
+        "message" : {
+          "type" : "string",
+          "description" : "The password expired message."
+        },
+        "changePasswordURL" : {
+          "type" : "string",
+          "description" : "The change password URL."
+        }
+      },
+      "xml" : {
+        "name" : "passwordExpired"
+      }
+    },
+    "ServerTime" : {
+      "type" : "object",
+      "properties" : {
+        "requestArrivalTime" : {
+          "type" : "string",
+          "description" : "The server time when request is received. The date format is `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'` and conforms to ISO-8601 date formatting standard"
+        },
+        "responseDepartureTime" : {
+          "type" : "string",
+          "description" : "The server time when response is sent. The date format is `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'` and conforms to ISO-8601 date formatting standard."
+        }
+      },
+      "xml" : {
+        "name" : "serverTime"
+      }
+    },
+    "ResetPassword" : {
+      "type" : "object",
+      "required" : [ "email" ],
+      "properties" : {
+        "email" : {
+          "type" : "string",
+          "description" : "The email."
+        }
+      },
+      "xml" : {
+        "name" : "resetPassword"
+      }
+    },
+    "Search" : {
+      "type" : "object",
+      "properties" : {
+        "item" : {
+          "$ref" : "#/definitions/SearchItem"
+        }
+      },
+      "xml" : {
+        "name" : "object"
+      }
+    },
+    "SearchItem" : {
+      "type" : "object",
+      "properties" : {
+        "key" : {
+          "type" : "string",
+          "xml" : {
+            "attribute" : true
+          },
+          "description" : "A search property.",
+          "enum" : [ "nRecords", "nDisplayRecords", "data" ]
+        }
+      },
+      "xml" : {
+        "name" : "item"
+      }
+    },
+    "SharedFolders" : {
+      "type" : "object",
+      "properties" : {
+        "sharedFolders" : {
+          "type" : "array",
+          "description" : "List of shared folders",
+          "items" : {
+            "$ref" : "#/definitions/SharedFolder"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "sharedFolders"
+      }
+    },
+    "SharedFolder" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "description" : "The name of the folder"
+        },
+        "isShared" : {
+          "type" : "boolean",
+          "description" : "Define whether the folder is shared with other users (true if shared, false otherwise)",
+          "default" : false
+        },
+        "owner" : {
+          "type" : "string",
+          "description" : "The folder owner"
+        },
+        "isOwner" : {
+          "type" : "boolean",
+          "description" : "Define whether the currently logged-in user is the folder owner (true if the user is the owner, otherwise false)",
+          "default" : false
+        },
+        "shareRights" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "The the shared rights. Permissions: value **1** for `Download files`, value **3** for `Download and Upload files`, value **7** for `Download, Upload and Overwrite files`.\"\n"
+        },
+        "enableNotifications" : {
+          "type" : "boolean",
+          "description" : "Define whether the notifications are enabled (true if notifications are enabled, otherwise - false)",
+          "default" : false
+        },
+        "enableOwnerNotifications" : {
+          "type" : "boolean",
+          "description" : "Define whether the notifications are enabled for the folder owner(true if owner notifications are enabled, otherwise - false)",
+          "default" : false
+        },
+        "showCollaboratorsToAll" : {
+          "type" : "boolean",
+          "description" : "Define whether the showing collaborators is enabled to all (true if enabled, false otherwise)",
+          "default" : false
+        },
+        "collaborators" : {
+          "type" : "array",
+          "description" : "A set of collaborators' email addresses.",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "sharedFolder"
+      }
+    },
+    "FolderSharingOptions" : {
+      "type" : "object",
+      "properties" : {
+        "users" : {
+          "type" : "array",
+          "description" : "List of email addresses that the folder is shared with",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "shareRights" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "The share rights"
+        },
+        "notifications" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Enable or disable notifications"
+        },
+        "ownerNotifications" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "Enable or disable notifications for folder owner"
+        },
+        "showCollaboratorsToAll" : {
+          "type" : "boolean",
+          "description" : "Define whether showing all collaborators is enabled or not.",
+          "default" : false
+        }
+      },
+      "xml" : {
+        "name" : "folderSharingOptions"
+      }
+    },
+    "TransferEntries" : {
+      "type" : "object",
+      "properties" : {
+        "transferEntries" : {
+          "type" : "array",
+          "description" : "Collection of transfer entry entities.",
+          "items" : {
+            "$ref" : "#/definitions/TransferEntry"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "transferEntries"
+      }
+    },
+    "TransferEntry" : {
+      "type" : "object",
+      "properties" : {
+        "status" : {
+          "type" : "string",
+          "description" : "The status of the transfer",
+          "enum" : [ "In Progress", "Processed", "Failed", "Aborted", "Pending receipt", "Failed Subtransmission", "Paused", "Failed Transfer Resubmit" ]
+        },
+        "secure" : {
+          "type" : "boolean",
+          "description" : "Defines whether the transfer occurred over secure connection",
+          "default" : false
+        },
+        "account" : {
+          "type" : "string",
+          "description" : "The name of the account that performed the transfer"
+        },
+        "login" : {
+          "type" : "string",
+          "description" : "The user login name used for this transfer"
+        },
+        "direction" : {
+          "type" : "string",
+          "description" : "Define the transfer direction",
+          "enum" : [ "Incoming", "Outgoing" ]
+        },
+        "actionBy" : {
+          "type" : "string",
+          "description" : "Defines whether the transfer is server or client initiated",
+          "enum" : [ "Server", "User" ]
+        },
+        "filename" : {
+          "type" : "string",
+          "description" : "The name of the transferred file"
+        },
+        "filesize" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Transfered file size"
+        },
+        "protocol" : {
+          "type" : "string",
+          "description" : "The protocol used to transfer the file",
+          "enum" : [ "as2", "ftp", "http", "ssh", "pesit", "folder", "adhoc" ]
+        },
+        "startTime" : {
+          "type" : "string",
+          "description" : "The time when transfer started in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z)"
+        },
+        "duration" : {
+          "type" : "string",
+          "description" : "Defines the time when transfer is finished (in miliseconds)"
+        },
+        "operationIndex" : {
+          "type" : "string",
+          "description" : "The operation index of the transfer. It could be '(none)' or some ID."
+        }
+      },
+      "xml" : {
+        "name" : "transferEntry"
+      }
+    },
+    "TransferLogDetails" : {
+      "type" : "object",
+      "properties" : {
+        "status" : {
+          "type" : "string",
+          "description" : "The status of the transfer"
+        },
+        "startTime" : {
+          "type" : "string",
+          "description" : "The time when the transfer started in RFC2822 format (EEE, d MMM yyyy HH:mm:ss Z)"
+        },
+        "duration" : {
+          "type" : "string",
+          "description" : "The transfer duration (in milliseconds)"
+        },
+        "account" : {
+          "type" : "string",
+          "description" : "The name of the account that performed the transfer"
+        },
+        "login" : {
+          "type" : "string",
+          "description" : "The user login name used for this transfer"
+        },
+        "userClass" : {
+          "type" : "string",
+          "description" : "The user class. By default the user class can be `VirtClass` or `RealClass`"
+        },
+        "userType" : {
+          "type" : "string",
+          "description" : "The user type"
+        },
+        "application" : {
+          "type" : "string",
+          "description" : "The application of the transfer"
+        },
+        "transferType" : {
+          "type" : "string",
+          "description" : "The transfer type",
+          "enum" : [ "Auto-Pull", "Auto-Push", "User upload", "User download" ]
+        },
+        "transferSite" : {
+          "type" : "string",
+          "description" : "The transfer site"
+        },
+        "file" : {
+          "type" : "string",
+          "description" : "The transferred file"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "The size of the transferred file"
+        },
+        "protocol" : {
+          "type" : "string",
+          "description" : "The protocol of the transfer",
+          "enum" : [ "as2", "ftp", "http", "ssh", "pesit", "folder", "adhoc" ]
+        },
+        "mode" : {
+          "type" : "string",
+          "description" : "The transfer mode",
+          "enum" : [ "BINARY", "ASCII", "EBCDIC", "EBCDIC_NATIVE" ]
+        },
+        "remoteHost" : {
+          "type" : "string",
+          "description" : "The remote host"
+        },
+        "remoteFolder" : {
+          "type" : "string",
+          "description" : "The remote folder"
+        },
+        "accountFolder" : {
+          "type" : "string",
+          "description" : "The account folder"
+        },
+        "realFile" : {
+          "type" : "string",
+          "description" : "The real file path"
+        },
+        "transferId" : {
+          "type" : "string",
+          "description" : "The id of the transfer"
+        },
+        "sessionId" : {
+          "type" : "string",
+          "description" : "The session ID of the transfer"
+        },
+        "archivedAs" : {
+          "type" : "string",
+          "description" : "The name under which the transferred file is archived"
+        },
+        "successMessage" : {
+          "type" : "string",
+          "description" : "The transfer success message"
+        },
+        "errorMessage" : {
+          "type" : "string",
+          "description" : "The transfer error message"
+        },
+        "pesitAcknowledge" : {
+          "type" : "string",
+          "description" : "The PeSIT acknowledge"
+        },
+        "operationIndex" : {
+          "type" : "string",
+          "description" : "The transfer's operation index"
+        },
+        "protocolCommands" : {
+          "type" : "string",
+          "description" : "The transfer protocol commands"
+        },
+        "subtransmissionStatuses" : {
+          "description" : "Status of the subtransmission operations (if there are any)",
+          "$ref" : "#/definitions/SubtransmissionStatuses"
+        },
+        "requestEntity" : {
+          "type" : "string",
+          "description" : "Representation of the rest api call that initiated the transfer(if submitted through the ST RESTful API)."
+        }
+      },
+      "xml" : {
+        "name" : "transferLogDetails"
+      }
+    },
+    "SubtransmissionStatuses" : {
+      "type" : "object",
+      "properties" : {
+        "subtransmissionStatuses" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/SubtransmissionStatus"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "subtransmissionStatuses"
+      }
+    },
+    "SubtransmissionStatus" : {
+      "type" : "object",
+      "properties" : {
+        "operationType" : {
+          "type" : "string",
+          "description" : "The subtransmisstion operation type"
+        },
+        "completion" : {
+          "type" : "string",
+          "description" : "The operation status value"
+        },
+        "result" : {
+          "type" : "string",
+          "description" : "The result of the operation (usually a filename)"
+        },
+        "comment" : {
+          "type" : "string",
+          "description" : "The subtransmission comment."
+        }
+      },
+      "xml" : {
+        "name" : "subtransmissionStatus"
+      }
+    },
+    "MonitoredFolder" : {
+      "type" : "object",
+      "required" : [ "downloadFolder", "fileCaseSensitive", "filePattern", "filePatternType", "maxDepth", "subFolderCaseSensitive", "subFolderPattern", "subFolderPatternType", "uploadFolder" ],
+      "properties" : {
+        "operationIndex" : {
+          "type" : "string",
+          "description" : "The transfer's operation index denoting a group file transfer inspired by this monitored folder"
+        },
+        "downloadFolder" : {
+          "type" : "string",
+          "description" : "The download folder from which files are retrieved"
+        },
+        "filePattern" : {
+          "type" : "string",
+          "description" : "The file selection pattern."
+        },
+        "filePatternType" : {
+          "type" : "string",
+          "description" : "The file pattern type",
+          "default" : "glob",
+          "enum" : [ "glob", "regexp" ]
+        },
+        "fileCaseSensitive" : {
+          "type" : "boolean",
+          "description" : "Define whether the file pattern is to take into account case-sensitiveness (true if case-sensitive, false otherwise)",
+          "default" : true
+        },
+        "subFolderPattern" : {
+          "type" : "string",
+          "description" : "The sub-folder selection pattern"
+        },
+        "subFolderPatternType" : {
+          "type" : "string",
+          "description" : "The sub-folder pattern type",
+          "default" : "glob",
+          "enum" : [ "glob", "regexp" ]
+        },
+        "subFolderCaseSensitive" : {
+          "type" : "boolean",
+          "description" : "Define whether the sub-folder pattern is to take into account case-sensitiveness",
+          "default" : true
+        },
+        "maxDepth" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "The sub-folder traverse maximum depth. If this property is negative then the whole sub-folder tree will be traversed",
+          "default" : 1
+        },
+        "uploadFolder" : {
+          "type" : "string",
+          "description" : "The upload folder where files are moved."
+        }
+      },
+      "xml" : {
+        "name" : "monitoredFolder"
+      }
+    },
+    "TransferResult" : {
+      "type" : "object",
+      "required" : [ "message" ],
+      "properties" : {
+        "message" : {
+          "type" : "string",
+          "description" : "The transfer result message"
+        },
+        "link" : {
+          "type" : "string",
+          "description" : "The transfer log link."
+        }
+      },
+      "xml" : {
+        "name" : "transferResult"
+      }
+    },
+    "TransferPull" : {
+      "type" : "object",
+      "required" : [ "destinationDirectory", "site" ],
+      "properties" : {
+        "destinationDirectory" : {
+          "type" : "string",
+          "description" : "The destination directory"
+        },
+        "site" : {
+          "type" : "string",
+          "description" : "The site name"
+        },
+        "operationIndex" : {
+          "type" : "string",
+          "description" : "The transfer operation index"
+        },
+        "asynchronousCall" : {
+          "type" : "boolean",
+          "description" : "Define whether the transfer is to be executed asynchronously (true if transfer is to be executed asynchronously, false otherwise)",
+          "default" : false
+        },
+        "transferProfile" : {
+          "type" : "string",
+          "description" : "The transfer profile name. Note: **This attribute is required in PeSIT protocol transfers only**.\n"
+        },
+        "sentinelCycleId" : {
+          "type" : "string",
+          "description" : "The the sentinel cycle id"
+        },
+        "sentinelTrackingObject" : {
+          "type" : "string",
+          "description" : "The sentinel tracked object"
+        }
+      },
+      "additionalProperties" : {
+        "type" : "string"
+      },
+      "xml" : {
+        "name" : "transferPull"
+      }
+    },
+    "TransferPush" : {
+      "type" : "object",
+      "required" : [ "file", "site" ],
+      "properties" : {
+        "file" : {
+          "type" : "string",
+          "description" : "The name of the file"
+        },
+        "site" : {
+          "type" : "string",
+          "description" : "The site name"
+        },
+        "operationIndex" : {
+          "type" : "string",
+          "description" : "The transfer operation index"
+        },
+        "asynchronousCall" : {
+          "type" : "boolean",
+          "description" : "Define whether the transfer is to be executed asynchronously (true if transfer is to be executed asynchronously, false otherwise)"
+        },
+        "transferProfile" : {
+          "type" : "string",
+          "description" : "The transfer profile name. Note: **This attribute is required in PeSIT protocol transfers only**.\n"
+        },
+        "sentinelCycleId" : {
+          "type" : "string",
+          "description" : "The the sentinel cycle id"
+        },
+        "sentinelTrackingObject" : {
+          "type" : "string",
+          "description" : "The sentinel tracked object"
+        }
+      },
+      "additionalProperties" : {
+        "type" : "string"
+      },
+      "xml" : {
+        "name" : "transferPush"
+      }
+    },
+    "TransferDataEntries" : {
+      "type" : "object",
+      "properties" : {
+        "transferData" : {
+          "type" : "array",
+          "description" : "Collection of transfer data entities.",
+          "items" : {
+            "$ref" : "#/definitions/TransferData"
+          }
+        }
+      },
+      "xml" : {
+        "name" : "transferDataEntries"
+      }
+    },
+    "TransferData" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string",
+          "description" : "The data type"
+        },
+        "receipt" : {
+          "type" : "boolean",
+          "description" : "Defines whether the data is a receipt (true if the data is receipt, false otherwise)",
+          "default" : false
+        },
+        "data" : {
+          "type" : "string",
+          "description" : "The transfer data"
+        },
+        "startTime" : {
+          "type" : "string",
+          "description" : "The time when the transfer started"
+        },
+        "transferId" : {
+          "type" : "string",
+          "description" : "The ID of the transfer."
+        }
+      },
+      "xml" : {
+        "name" : "transferData"
+      }
+    },
+    "ReceiptVerificationResult" : {
+      "type" : "object",
+      "properties" : {
+        "fileIntegrityResult" : {
+          "type" : "string",
+          "description" : "The integrity check result code"
+        },
+        "signatureResult" : {
+          "type" : "string",
+          "description" : "The signature check result."
+        }
+      },
+      "xml" : {
+        "name" : "receiptVerificationResult"
+      }
+    },
+    "MapStringToString" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "type" : "string"
+      },
+      "xml" : {
+        "name" : "map"
+      }
+    },
+    "MapStringToObject" : {
+      "type" : "object",
+      "additionalProperties" : {
+        "type" : "object",
+        "properties" : { }
+      },
+      "xml" : {
+        "name" : "map"
+      }
+    },
+    "AsyncOperation_result" : {
+      "properties" : {
+        "fileSize" : {
+          "type" : "string"
+        },
+        "md5Checksum" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Specifies the md5 checksum and the file size result of the operation."
+    },
+    "AsyncOperation_customAttributes" : {
+      "properties" : {
+        "transferMode" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Specifies the transfer mode of the operation. It can be 'BINARY' or 'ASCII'."
+    }
+  }
+}
